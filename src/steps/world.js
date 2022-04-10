@@ -30,4 +30,4 @@ class ParentWorld {
   }
 }
 
-module.exports = ParentWorld;
+export default ParentWorld;

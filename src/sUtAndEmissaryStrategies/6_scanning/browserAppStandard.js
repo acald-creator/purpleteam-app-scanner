@@ -11,7 +11,7 @@ const Scanning = require('./strategy');
 
 class BrowserAppStandard extends Scanning {
   #sutPropertiesSubSet;
-  #emissaryPropertiesSubSet
+  #emissaryPropertiesSubSet;
   #fileName = 'browserAppStandard';
 
   constructor({ log, publisher, baseUrl, sutPropertiesSubSet, emissaryPropertiesSubSet, zAp }) {

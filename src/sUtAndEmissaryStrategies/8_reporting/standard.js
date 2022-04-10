@@ -8,9 +8,9 @@
 // by the Apache License, Version 2.0
 
 
-const { promises: fsPromises } = require('fs');
-const Reporting = require('./strategy');
-const chmodr = require('./helper/chmodr');
+import { promises as fsPromises } from 'fs';
+import Reporting from './strategy';
+import chmodr from './helper/chmodr';
 
 const strings = require(`${process.cwd()}/src/strings`); // eslint-disable-line import/no-dynamic-require
 const config = require(`${process.cwd()}/config/config`); // eslint-disable-line import/no-dynamic-require
@@ -19,7 +19,7 @@ const { version } = require(`${process.cwd()}/package.json`); // eslint-disable-
 class Standard extends Reporting {
   #baseUrl;
   #sutPropertiesSubSet;
-  #emissaryPropertiesSubSet
+  #emissaryPropertiesSubSet;
   #fileName = 'standard';
   #reportPrefix = 'report_';
   #emissaryOutputTransitionDir = '/usr/emissaryOutputTransition/'; // Defined in Dockerfile
@@ -973,4 +973,4 @@ class Standard extends Reporting {
   }
 }
 
-module.exports = Standard;
+export default Standard;

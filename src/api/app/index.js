@@ -7,21 +7,18 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const App = require('./models/app');
-const routes = require('./routes');
+import App from './models/app';
+import routes from './routes';
 
 const applyRoutes = (server) => {
   // Plugin with multiple routes.
   server.route(routes);
 };
 
-module.exports = {
-  name: 'appDomainPlugin',
-  version: '1.0.0',
-  register: async (server, options) => {
-    const model = new App(options);
-    server.app.model = model; // eslint-disable-line no-param-reassign
-    applyRoutes(server);
-  }
-
-};
+export const name = 'appDomainPlugin';
+export const version = '1.0.0';
+export async function register(server, options) {
+  const model = new App(options);
+  server.app.model = model; // eslint-disable-line no-param-reassign
+  applyRoutes(server);
+}

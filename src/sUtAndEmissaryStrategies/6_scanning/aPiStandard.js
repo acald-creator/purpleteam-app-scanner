@@ -11,7 +11,7 @@ const Scanning = require('./strategy');
 
 class ApiStandard extends Scanning {
   #sutPropertiesSubSet;
-  #emissaryPropertiesSubSet
+  #emissaryPropertiesSubSet;
   #fileName = 'aPiStandard';
 
   constructor({ log, publisher, baseUrl, sutPropertiesSubSet, emissaryPropertiesSubSet, zAp }) {

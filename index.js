@@ -7,12 +7,11 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-require('app-module-path/register');
-const server = require('src/server');
+import { registerPlugins, start } from './src/server.js';
 
 const init = async () => {
-  await server.registerPlugins();
-  const startedServer = await server.start();
+  await registerPlugins();
+  const startedServer = await start();
   startedServer.log(['startup'], `purpleteam-app-scanner running at: ${startedServer.info.uri} in ${process.env.NODE_ENV} mode.`);
 };
 

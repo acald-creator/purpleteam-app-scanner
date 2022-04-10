@@ -7,19 +7,19 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const http = require('http');
-require('convict');
-const config = require('./config/config');
+import { request as _request } from 'http';
+import 'convict';
+import { get } from './config/config';
 
 const options = {
-  host: config.get('host.host'),
-  port: config.get('host.port'),
+  host: get('host.host'),
+  port: get('host.port'),
   path: '/status',
   timeout: 2000
 };
 
 /* eslint-disable no-console */
-const request = http.request(options, (res) => {
+const request = _request(options, (res) => {
   console.log(`StatusCode: ${res.statusCode}`);
   if (res.statusCode === 200) process.exit(0);
   process.exit(1);

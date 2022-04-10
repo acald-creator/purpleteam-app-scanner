@@ -108,4 +108,4 @@ class Sut {
   }
 }
 
-module.exports = Sut;
+export default Sut;

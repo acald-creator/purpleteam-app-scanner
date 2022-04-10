@@ -7,8 +7,8 @@
 // the Business Source License, use of this software will be governed
 // by the Apache License, Version 2.0
 
-const Joi = require('joi');
-const Sut = require('./sUt');
+import { object, string, number, array, boolean } from 'joi';
+import Sut from './sUt';
 /* eslint-disable import/no-dynamic-require */
 const WebDriverFactory = require(`${process.cwd()}/src/drivers/webDriverFactory`);
 const browser = require(`${process.cwd()}/src/clients/browser`);
@@ -24,64 +24,64 @@ class BrowserApp extends Sut {
   #SitesTreeSutAuthenticationPopulation;
 
   #createSchema() {
-    this.#sutSchema = Joi.object({
-      sUtType: Joi.string().required().valid('BrowserApp'),
-      protocol: Joi.string().required().valid('https', 'http'),
-      ip: Joi.string().hostname().required(),
-      port: Joi.number().port().required(),
-      browser: Joi.string().valid(...this.#configSchemaProps.sut._cvtProperties.browser.format).lowercase().default(this.config.get('sut.browser')), // eslint-disable-line no-underscore-dangle
-      loggedInIndicator: Joi.string(),
-      loggedOutIndicator: Joi.string(),
-      context: Joi.object({ // Zap context
-        id: Joi.number().integer().positive(), // Provided by Zap.
-        name: Joi.string().token() // Created in the app.js model.
+    this.#sutSchema = object({
+      sUtType: string().required().valid('BrowserApp'),
+      protocol: string().required().valid('https', 'http'),
+      ip: string().hostname().required(),
+      port: number().port().required(),
+      browser: string().valid(...this.#configSchemaProps.sut._cvtProperties.browser.format).lowercase().default(this.config.get('sut.browser')), // eslint-disable-line no-underscore-dangle
+      loggedInIndicator: string(),
+      loggedOutIndicator: string(),
+      context: object({ // Zap context
+        id: number().integer().positive(), // Provided by Zap.
+        name: string().token() // Created in the app.js model.
       }),
-      userId: Joi.number().integer().positive(), // Provided by Zap.
-      authentication: Joi.object({
-        sitesTreeSutAuthenticationPopulationStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('FormStandard'),
-        emissaryAuthenticationStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('FormStandard'),
-        route: Joi.string().min(2).regex(/^\/[-?&=\w/]{1,1000}$/),
-        usernameFieldLocater: Joi.string().min(2),
-        passwordFieldLocater: Joi.string().min(2),
-        submit: Joi.string().min(2).regex(/^[a-z0-9_-]+/i),
-        expectedPageSourceSuccess: Joi.string().min(2).max(200).required()
+      userId: number().integer().positive(), // Provided by Zap.
+      authentication: object({
+        sitesTreeSutAuthenticationPopulationStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('FormStandard'),
+        emissaryAuthenticationStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('FormStandard'),
+        route: string().min(2).regex(/^\/[-?&=\w/]{1,1000}$/),
+        usernameFieldLocater: string().min(2),
+        passwordFieldLocater: string().min(2),
+        submit: string().min(2).regex(/^[a-z0-9_-]+/i),
+        expectedPageSourceSuccess: string().min(2).max(200).required()
       }),
-      testSession: Joi.object({
-        type: Joi.string().valid('appScanner').required(),
-        id: Joi.string().regex(/^\w[-\w]{1,200}$/).required(),
-        attributes: Joi.object({
-          sitesTreePopulationStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('WebDriverStandard'),
-          spiderStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('Standard'),
-          scannersStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
-          scanningStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
-          postScanningStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
-          reportingStrategy: Joi.string().min(2).regex(/^[-\w/]{1,200}$/).default('Standard'),
-          reports: Joi.object({ templateThemes: Joi.array().items(Joi.object({ name: Joi.string().min(1).max(100).regex(/^[a-z0-9]+/i).required() })).required() }),
-          username: Joi.string().min(2).required(),
-          password: Joi.string().min(2),
-          aScannerAttackStrength: Joi.string().valid(...this.#configSchemaProps.sut._cvtProperties.aScannerAttackStrength.format).uppercase().default(this.config.get('sut.aScannerAttackStrength')), // eslint-disable-line no-underscore-dangle
-          aScannerAlertThreshold: Joi.string().valid(...this.#configSchemaProps.sut._cvtProperties.aScannerAlertThreshold.format).uppercase().default(this.config.get('sut.aScannerAlertThreshold')), // eslint-disable-line no-underscore-dangle
-          alertThreshold: Joi.number().integer().min(0).max(1000).default(this.config.get('sut.alertThreshold')),
-          excludedRoutes: Joi.array().items(Joi.string()).default([])
+      testSession: object({
+        type: string().valid('appScanner').required(),
+        id: string().regex(/^\w[-\w]{1,200}$/).required(),
+        attributes: object({
+          sitesTreePopulationStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('WebDriverStandard'),
+          spiderStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('Standard'),
+          scannersStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
+          scanningStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
+          postScanningStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('BrowserAppStandard'),
+          reportingStrategy: string().min(2).regex(/^[-\w/]{1,200}$/).default('Standard'),
+          reports: object({ templateThemes: array().items(object({ name: string().min(1).max(100).regex(/^[a-z0-9]+/i).required() })).required() }),
+          username: string().min(2).required(),
+          password: string().min(2),
+          aScannerAttackStrength: string().valid(...this.#configSchemaProps.sut._cvtProperties.aScannerAttackStrength.format).uppercase().default(this.config.get('sut.aScannerAttackStrength')), // eslint-disable-line no-underscore-dangle
+          aScannerAlertThreshold: string().valid(...this.#configSchemaProps.sut._cvtProperties.aScannerAlertThreshold.format).uppercase().default(this.config.get('sut.aScannerAlertThreshold')), // eslint-disable-line no-underscore-dangle
+          alertThreshold: number().integer().min(0).max(1000).default(this.config.get('sut.alertThreshold')),
+          excludedRoutes: array().items(string()).default([])
         }),
-        relationships: Joi.object({
-          data: Joi.array().items(Joi.object({
-            type: Joi.string().valid('route').required(),
-            id: Joi.string().min(2).regex(/^\/[-\w/]{1,200}$/).required()
+        relationships: object({
+          data: array().items(object({
+            type: string().valid('route').required(),
+            id: string().min(2).regex(/^\/[-\w/]{1,200}$/).required()
           }))
         })
       }),
-      testRoutes: Joi.array().items(Joi.object({
-        type: Joi.string().valid('route').required(),
-        id: Joi.string().min(2).regex(/^\/[-\w/]{1,200}$/).required(),
-        attributes: Joi.object({
-          attackFields: Joi.array().items(Joi.object({
-            name: Joi.string().min(1).max(100).regex(/^[a-z0-9._-]+/i).required(),
-            value: [Joi.string().empty('').default(''), Joi.boolean(), Joi.number()],
-            visible: Joi.boolean()
+      testRoutes: array().items(object({
+        type: string().valid('route').required(),
+        id: string().min(2).regex(/^\/[-\w/]{1,200}$/).required(),
+        attributes: object({
+          attackFields: array().items(object({
+            name: string().min(1).max(100).regex(/^[a-z0-9._-]+/i).required(),
+            value: [string().empty('').default(''), boolean(), number()],
+            visible: boolean()
           })),
-          method: Joi.string().valid(...this.#configSchemaProps.sut._cvtProperties.method.format).uppercase().default(this.config.get('sut.method')), // eslint-disable-line no-underscore-dangle
-          submit: Joi.string().min(2).regex(/^[a-z0-9_-]+/i)
+          method: string().valid(...this.#configSchemaProps.sut._cvtProperties.method.format).uppercase().default(this.config.get('sut.method')), // eslint-disable-line no-underscore-dangle
+          submit: string().min(2).regex(/^[a-z0-9_-]+/i)
         })
       }))
     }).xor('loggedInIndicator', 'loggedOutIndicator');
@@ -230,4 +230,4 @@ class BrowserApp extends Sut {
   }
 }
 
-module.exports = BrowserApp;
+export default BrowserApp;
