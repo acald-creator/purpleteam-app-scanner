@@ -32,7 +32,7 @@ COPY package*.json /usr/src/app/
 
 RUN npm install
 
-COPY --chown=app_scanner:purpleteam . /usr/src/app/
+COPY --chown=$USER:$GROUP . /usr/src/app/
 
 USER $USER
 
