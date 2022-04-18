@@ -14,8 +14,7 @@ ARG LOCAL_GROUP_ID
 
 # Create an environment variable in our image for the non-root user we want to use.
 # ENV USER 1000
-ENV USER app_scanner
-ENV GROUP purpleteam
+ENV USER=app_scanner GROUP=purpleteam
 RUN echo user is: ${USER}, LOCAL_USER_ID is: ${LOCAL_USER_ID}, group is: ${GROUP}, LOCAL_GROUP_ID is: ${LOCAL_GROUP_ID}
 
 # Used for testing zap access manually (usefull for cloud env).
@@ -42,7 +41,6 @@ RUN apk add --no-cache shadow && \
 #     echo "$USER ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USER && \
 #     chmod 0440 /etc/sudoers.d/$USER
 
-ENV WORKDIR /usr/src/app/
 ENV EMISSARY_OUTPUT_TRANSITION_DIR /usr/emissaryOutputTransition/
 
 # Home is required for npm install. System account with no ability to login to shell
@@ -51,7 +49,7 @@ ENV EMISSARY_OUTPUT_TRANSITION_DIR /usr/emissaryOutputTransition/
 # For node alpine:
 # RUN addgroup -S $USER && adduser -S $USER -G $GROUP
 
-RUN mkdir -p $WORKDIR && chown $USER:$GROUP -R $WORKDIR \
+RUN mkdir -p /usr/src/app/ && chown $USER:$GROUP -R /usr/src/app/ \
   && mkdir $EMISSARY_OUTPUT_TRANSITION_DIR && chown $USER:$GROUP -R $EMISSARY_OUTPUT_TRANSITION_DIR && chmod -R 770 $EMISSARY_OUTPUT_TRANSITION_DIR
 
 #RUN cat /etc/resolv.conf
@@ -62,16 +60,16 @@ RUN mkdir -p $WORKDIR && chown $USER:$GROUP -R $WORKDIR \
 #RUN apk add --no-cache --virtual .gyp python make g++
 #RUN apk add --no-cache --virtual .gyp python
 
-WORKDIR $WORKDIR
+WORKDIR /usr/src/app/
 # For npm@5 or later, copy the automatically generated package-lock.json instead.
-COPY package*.json $WORKDIR
+COPY package*.json /usr/src/app/
 
 # Required if posix needed, for winston-syslog-posix
 #RUN apk add --no-cache --virtual .gyp python make g++
 
 # In a cloud build, add the --cloud flag, as in:
 #RUN cd $WORKDIR; npm install --cloud
-RUN cd $WORKDIR && npm install
+RUN npm install
 
 # Required if posix needed, for winston-syslog-posix
 #User root
@@ -80,7 +78,7 @@ RUN cd $WORKDIR && npm install
 
 # String expansion doesn't work currently: https://github.com/moby/moby/issues/35018
 # COPY --chown=${USER}:GROUP . $WORKDIR
-COPY --chown=app_scanner:purpleteam . $WORKDIR
+COPY --chown=app_scanner:purpleteam . /usr/src/app/
 
 # Here I used to chown and chmod as shown here: http://f1.holisticinfosecforwebdevelopers.com/chap03.html#vps-countermeasures-docker-the-default-user-is-root
 # Problem is, each of these commands creates another layer of all the files modified and thus adds over 100MB to the image: https://www.datawire.io/not-engineer-running-3-5gb-docker-images/
